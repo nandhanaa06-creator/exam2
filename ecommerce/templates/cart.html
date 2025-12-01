@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .cart-box {
+        width: 70%;
+        margin: 40px auto;
+        background: white;
+        padding: 25px 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+    }
+    .cart-item img {
+        width: 120px;
+        height: 120px;
+        border-radius: 6px;
+        object-fit: cover;
+    }
+    .qty-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .qty-btn {
+        padding: 5px 12px;
+        background: #000;
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    .remove-btn {
+        margin-left: 20px;
+        color: red;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    .checkout-btn {
+        background: black;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 18px;
+    }
+</style>
+
+<div class="cart-box">
+
+    <h2>Your Cart</h2>
+
+    {% for item in cart_items %}
+    <div class="cart-item">
+
+        <img src="{{ item.product.image.url }}">
+
+        <div style="margin-left:20px;">
+            <h3>{{ item.product.name }}</h3>
+            <p>Price: ₹{{ item.product.price }}</p>
+
+            <div class="qty-box">
+
+                <!-- Decrease -->
+                <a class="qty-btn" href="{% url 'cart_decrease' item.id %}">-</a>
+
+                <span>{{ item.quantity }}</span>
+
+                <!-- Increase -->
+                <a class="qty-btn" href="{% url 'cart_add' item.product.id %}">+</a>
+
+                <!-- Remove item -->
+                <a class="remove-btn" href="{% url 'cart_remove' item.id %}">Remove</a>
+
+            </div>
+        </div>
+
+        <div style="margin-left:auto; font-weight:bold; font-size:18px;">
+            ₹{{ item.total_price }}
+        </div>
+
+    </div>
+    {% endfor %}
+
+    <!-- Total + Checkout -->
+    <div style="margin-top:25px; display:flex; justify-content:space-between;">
+        <h2>Total: ₹{{ total }}</h2>
+        <a href="{% url 'checkout' %}" class="checkout-btn" >checkout</a>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <h2>Categories</h2>
+
+    <div class="grid">
+
+        {% for c in categories %}
+        <div class="card">
+            {% if c.image %}
+                <img src="{{ c.image.url }}" alt="{{ c.name }}">
+            {% else %}
+                <img src="https://via.placeholder.com/200x150?text={{ c.name }}" alt="">
+            {% endif %}
+
+            <h3>{{ c.name }}</h3>
+
+            <a href="/products/?category={{ c.id }}">View Products</a>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{%endblock%}

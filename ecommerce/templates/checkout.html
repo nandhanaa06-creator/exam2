@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="checkout-container">
+
+    <h2 class="checkout-title">Checkout</h2>
+
+    <div class="checkout-grid">
+
+        <!-- LEFT SIDE -->
+        <div class="checkout-left">
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" name="full_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Shipping Address</label>
+                    <textarea name="address" required rows="5"></textarea>
+                </div>
+
+                <button class="btn-place-order">Place Order</button>
+            </form>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="checkout-right">
+            <h3 class="summary-title">Order Summary</h3>
+
+            <div class="summary-row">
+                <span>Items:</span>
+                <span>{{ cart_items.count }}</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Total Amount:</span>
+                <span>₹{{ total }}</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

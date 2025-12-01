@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .edit-box {
+        width: 50%;
+        margin: 40px auto;
+        background: white;
+        padding: 25px 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .edit-box h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .edit-box form input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .btn {
+        background: black;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 6px;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    .btn:hover {
+        background: #333;
+    }
+</style>
+
+<div class="edit-box">
+    <h2>Edit Profile</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Username</label>
+        <input type="text" name="username" value="{{ request.user.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ request.user.email }}" required>
+
+        <button type="submit" class="btn">Save Changes</button>
+    </form>
+</div>
+
+{% endblock %}
