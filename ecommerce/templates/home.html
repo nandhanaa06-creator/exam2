@@ -1,11 +1,145 @@
 {% extends 'base.html' %}
 {% block content %}
 
-   
-    <div class="hero">
-        Welcome to ShopEase ✨  
+<!-- ================== -->
+<!-- HERO BANNER CAROUSEL -->
+<!-- ================== -->
+<div id="homeBannerCarousel" class="carousel slide" data-bs-ride="carousel">
+
+    <div class="carousel-indicators">
+        {% for banner in banners %}
+        <button type="button"
+                data-bs-target="#homeBannerCarousel"
+                data-bs-slide-to="{{ forloop.counter0 }}"
+                class="{% if forloop.first %}active{% endif %}">
+        </button>
+        {% endfor %}
     </div>
 
-    
+    <div class="carousel-inner">
+        {% for banner in banners %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img src="{{ banner.image.url }}" 
+                 class="d-block w-100"
+                 style="height:350px; object-fit:cover;">
+        </div>
+        {% endfor %}
+    </div>
 
-{%endblock%}
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+
+<!-- ================== -->
+<!-- CATEGORY SECTION -->
+<!-- ================== -->
+<div style="width: 95%; margin: 40px auto; text-align:center;">
+    <h2 style="font-weight:700; margin-bottom:25px;">Shop by Category</h2>
+
+    <div style="
+        display: flex; 
+        justify-content: center; 
+        gap: 40px; 
+        flex-wrap: wrap;
+    ">
+        {% for c in categories %}
+        <a href="/products/?category={{ c.id }}" 
+           style="text-decoration:none; color:black; width:120px; display:flex; flex-direction:column; align-items:center;">
+
+            <div style="
+                width: 110px;
+                height: 110px;
+                border-radius: 50%;
+                overflow: hidden;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                margin-bottom: 10px;
+                transition: transform .2s;
+            "
+            onmouseover="this.style.transform='scale(1.08)'"
+            onmouseout="this.style.transform='scale(1)'">
+
+                {% if c.image %}
+                <img src="{{ c.image.url }}" style="width:100%; height:100%; object-fit:cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/150" style="width:100%; height:100%; object-fit:cover;">
+                {% endif %}
+            </div>
+
+            <span style="font-size:16px; font-weight:600;">{{ c.name }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- ================== -->
+<!-- FEATURED PRODUCTS SECTION -->
+<!-- ================== -->
+<div style="width:95%; margin:40px auto; text-align:center;">
+    <h2 style="font-weight:700; margin-bottom:25px;">Featured Products</h2>
+
+    <div style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+    ">
+
+        {% for product in products|slice:":8" %}  <!-- SHOW ONLY FIRST 8 PRODUCTS -->
+        <div style="
+            background:white;
+            padding:15px;
+            border-radius:12px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+            text-align:center;
+            transition:.2s;
+        "
+        onmouseover="this.style.transform='scale(1.03)'"
+        onmouseout="this.style.transform='scale(1)'">
+
+            <!-- Image -->
+            {% if product.image %}
+            <img src="{{ product.image.url }}" style="width:100%; height:180px; object-fit:cover; border-radius:8px;">
+            {% else %}
+            <div style="width:100%; height:180px; background:#eee; border-radius:8px;"></div>
+            {% endif %}
+
+            <h4 style="margin-top:12px;">{{ product.name }}</h4>
+            <p style="font-weight:700;">₹{{ product.price }}</p>
+
+            <!-- Stock Display -->
+            {% if product.stock > 0 %}
+                {% if product.stock < 20 %}
+                    <p style="color:orange; font-weight:600;">Low Stock: {{ product.stock }}</p>
+                {% else %}
+                    <p style="color:green; font-weight:600;">In Stock: {{ product.stock }}</p>
+                {% endif %}
+            {% else %}
+                <span style="
+                    background:#ff4d4d;
+                    color:white;
+                    padding:4px 10px;
+                    border-radius:6px;
+                    font-size:13px;
+                    font-weight:600;
+                ">Out of Stock</span>
+            {% endif %}
+
+            <a href="{% url 'product_detail' product.id %}" 
+               class="btn btn-primary" 
+               style="margin-top:10px; width:100%;">
+               View
+            </a>
+
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

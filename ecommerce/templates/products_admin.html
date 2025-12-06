@@ -1,0 +1,265 @@
+{% extends 'admin_base.html' %}
+{% block admin_content %}
+
+<style>
+.modal-dialog {
+    margin-top: 155px !important;
+}
+.btn-sm {
+    padding: 7px 12px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+}
+.action-btn {
+    padding: 4px 10px !important;
+    font-size: 12px !important;
+    border-radius: 5px !important;
+    font-weight: 600 !important;
+}
+.action-group {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+.action-buttons a {
+    margin-right: 8px;
+}
+
+
+@media (max-height: 700px) {
+    .modal-dialog {
+        margin-top: 90px !important;
+    }
+}
+</style>
+
+<div style="
+    width: 95%;
+    max-width: 1350px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+">
+  <h2 style="text-align: center; margin-bottom: 35px; font-weight: 700; font-size: 32px;">
+    All Products
+  </h2>
+
+ <a href="#"
+   data-bs-toggle="modal"
+   data-bs-target="#addProductModal"
+   style="padding:10px 20px; background:#007bff; color:white; border-radius:8px; font-weight:600;">
+   + Add Product
+</a>
+
+</div>
+
+<div style="
+    width: 95%;
+    max-width: 1350px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    overflow-x: auto;
+">
+  <table style="
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      font-size: 17px;
+      text-align: center;
+  ">
+    <thead>
+      <tr style="background: #333333; color: white; height: 55px">
+        <th>ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Stock</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for p in products %}
+      <tr style="border-bottom: 1px solid #e6e6e6; transition: background 0.25s"
+          onmouseover="this.style.background='#f5f5f5'"
+          onmouseout="this.style.background='white'">
+
+        <td>{{ p.id }}</td>
+
+        <td>
+          {% if p.image %}
+          <img src="{{ p.image.url }}" style="width: 55px; height: 55px; object-fit: cover; border-radius: 6px;">
+          {% else %}
+          <span style="color: gray">No Image</span>
+          {% endif %}
+        </td>
+
+        <td>{{ p.name }}</td>
+        <td style="font-weight: 600">₹{{ p.price }}</td>
+
+        <td>
+          {% if p.category %}
+            {{ p.category.name }}
+          {% else %}
+            <span style="color: gray">—</span>
+          {% endif %}
+        </td>
+
+        <td style="font-weight:600;">
+          {{ p.stock }}
+        </td>
+
+        <!-- ACTIONS -->
+        <td>
+    <div class="action-group">
+
+        <!-- EDIT BUTTON -->
+        <a href="#"
+           data-bs-toggle="modal"
+           data-bs-target="#editProductModal{{ p.id }}"
+           class="btn btn-warning action-btn">
+            Edit
+        </a>
+
+        <!-- DELETE BUTTON -->
+        <a href="{% url 'delete_product' p.id %}"
+           class="btn btn-danger action-btn"
+           onclick="return confirm('Are you sure?');">
+            Delete
+        </a>
+
+        <!-- ADD / REMOVE FROM HOME BUTTON -->
+        <a href="{% url 'toggle_homepage_product' p.id %}"
+           class="action-btn"
+           style="
+               background: {% if p.show_on_homepage %}#28a745{% else %}#6f42c1{% endif %};
+               color: white;
+           ">
+            {% if p.show_on_homepage %}
+                Remove
+            {% else %}
+                Add
+            {% endif %}
+        </a>
+
+    </div>
+</td>
+
+
+      </tr>
+
+      <!-- EDIT MODAL -->
+      <div class="modal fade" id="editProductModal{{ p.id }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:450px;">
+          <div class="modal-content" style="border-radius:12px;">
+
+            <div style="background:#ff9500; color:white; padding:12px 20px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center;">
+              <h5>Edit Product</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+              <form method="POST" enctype="multipart/form-data" action="{% url 'edit_product' p.id %}">
+                {% csrf_token %}
+
+                <label>Name:</label>
+                <input type="text" name="name" class="form-control" value="{{ p.name }}">
+
+                <label class="mt-2">Price:</label>
+                <input type="number" name="price" class="form-control" value="{{ p.price }}">
+
+                <label class="mt-2">Description:</label>
+                <textarea name="description" class="form-control">{{ p.description }}</textarea>
+
+                <label class="mt-2">Image:</label>
+                <input type="file" name="image" class="form-control">
+
+                <label class="mt-2">Category:</label>
+                <select name="category" class="form-control">
+                  {% for c in categories %}
+                  <option value="{{ c.id }}" {% if c.id == p.category.id %}selected{% endif %}>
+                    {{ c.name }}
+                  </option>
+                  {% endfor %}
+                </select>
+
+                <!-- STOCK FIELD ADDED -->
+                <label class="mt-2">Stock:</label>
+                <input type="number" name="stock" class="form-control" value="{{ p.stock }}">
+
+                <button type="submit" class="btn btn-warning mt-3" style="width:100%;">
+                  Save Changes
+                </button>
+              </form>
+
+              <form method="POST" action="{% url 'delete_product' p.id %}" onsubmit="return confirm('Delete this product?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger mt-2" style="width:100%;">Delete Product</button>
+              </form>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<!-- ADD PRODUCT MODAL -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+    <div class="modal-content" style="border-radius: 12px;">
+
+      <div style="background:#007bff; color:white; padding:12px 20px; border-radius:12px 12px 0 0; display:flex; justify-content:space-between; align-items:center;">
+        <h5>Add New Product</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <form method="POST" enctype="multipart/form-data" action="{% url 'admin_products' %}">
+          {% csrf_token %}
+
+          <label>Name:</label>
+          <input type="text" name="name" class="form-control">
+
+          <label class="mt-2">Price:</label>
+          <input type="number" name="price" class="form-control">
+
+          <label class="mt-2">Description:</label>
+          <textarea name="description" class="form-control"></textarea>
+
+          <label class="mt-2">Image:</label>
+          <input type="file" name="image" class="form-control">
+
+          <label class="mt-2">Category:</label>
+          <select name="category" class="form-control">
+            {% for c in categories %}
+            <option value="{{ c.id }}">{{ c.name }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- STOCK FIELD ADDED -->
+          <label class="mt-2">Stock:</label>
+          <input type="number" name="stock" class="form-control">
+
+          <button class="btn btn-primary mt-3" style="width:100%;">Add Product</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

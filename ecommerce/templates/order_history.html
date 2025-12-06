@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .orders-box {
+        width: 70%;
+        margin: 40px auto;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-top: 151px;
+    }
+
+    .orders-box h2 {
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background: #f3f3f3;
+        text-align: left;
+    }
+
+    .status {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+    }
+
+    .status.pending { background: orange; }
+    .status.completed { background: green; }
+    .status.cancelled { background: crimson; }
+
+    .back-btn {
+        margin-top: 20px;
+        display: inline-block;
+        background: black;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+    }
+
+    .back-btn:hover {
+        background: #333;
+    }
+
+</style>
+
+<div class="orders-box">
+    <h2>Your Orders</h2>
+
+    {% if orders %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                        <td>₹{{ order.total_amount }}</td>
+                        <td>
+                            <span class="status {{ order.status }}">
+                                {{ order.status|title }}
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No orders found.</p>
+    {% endif %}
+
+    <a href="{% url 'profile' %}" class="back-btn">Back to Profile</a>
+</div>
+
+{% endblock %}

@@ -2,13 +2,113 @@
 
 {% block content %}
 
+<style>
+    body {
+        background: #f5f7fa;
+    }
 
+    .checkout-container {
+        width: 80%;
+        margin: 40px auto;
+    }
+
+    .checkout-title {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 30px;
+    }
+
+    /* LEFT FORM */
+    .checkout-left {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+        color: #444;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #0d6efd;
+        box-shadow: 0 0 5px rgba(13,110,253,0.3);
+    }
+
+    .btn-place-order {
+        width: 100%;
+        background: #0d6efd;
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-size: 17px;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-place-order:hover {
+        background: #0056d2;
+    }
+
+    /* RIGHT SUMMARY */
+    .checkout-right {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        height: fit-content;
+    }
+
+    .summary-title {
+        font-size: 22px;
+        margin-bottom: 15px;
+        font-weight: 600;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 12px 0;
+        font-size: 16px;
+    }
+
+</style>
 
 <div class="checkout-container">
 
     <h2 class="checkout-title">Checkout</h2>
 
-    <div class="checkout-grid">
+    <div class="checkout-Agrid">
 
         <!-- LEFT SIDE -->
         <div class="checkout-left">

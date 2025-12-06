@@ -1,0 +1,196 @@
+{% extends 'admin_base.html' %}
+{% block admin_content %}
+
+<style>
+/* Ensure modal stays above sidebar/navbar */
+.modal-backdrop { z-index: 3000 !important; }
+.modal { z-index: 4000 !important; }
+</style>
+
+<h2 style="text-align:center; margin-bottom:35px; font-weight:700; font-size:32px;">
+  All Users
+</h2>
+
+<div style="width:100%; padding:10px 30px;">
+  <div style="
+      width:100%; background:white; border-radius:12px;
+      overflow-x:auto; box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  ">
+    <table style="width:100%; min-width:900px; border-collapse:collapse; text-align:center;">
+      <thead style="background:#2c2b2b; color:white;">
+        <tr style="height:70px;">
+          <th style="padding:20px">ID</th>
+          <th style="padding:20px">Username</th>
+          <th style="padding:20px">Email</th>
+          <th style="padding:20px">Date Joined</th>
+          <th style="padding:20px">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for user in users %}
+        <tr style="height:60px; border-bottom:1px solid #ececec; background:{% cycle '#fff' '#f7f7f7' %};">
+
+          <td style="padding:18px">{{ user.id }}</td>
+
+          <!-- Username + Blocked label -->
+          <td style="padding:18px">
+            {{ user.username }}
+            {% if not user.is_active %}
+              <span style="color:red; font-weight:700; margin-left:6px;">(Blocked)</span>
+            {% endif %}
+          </td>
+
+          <td style="padding:18px">{{ user.email }}</td>
+
+          <td style="padding:18px">{{ user.date_joined|date:'Y-m-d' }}</td>
+
+          <td style="padding:18px;">
+            <div style="display:flex; flex-direction:column; gap:8px; width:140px; margin:auto;">
+
+              <!-- EDIT BUTTON -->
+              <button
+                type="button"
+                class="btn btn-primary open-edit-modal"
+                data-user-id="{{ user.id }}"
+                data-username="{{ user.username|escapejs }}"
+                data-email="{{ user.email|escapejs }}"
+                style="font-weight:600;">
+                Edit
+              </button>
+
+              <!-- BLOCK / UNBLOCK BUTTON -->
+              {% if user.is_active %}
+                <button type="button"
+                        class="btn btn-dark block-user-btn"
+                        data-user-id="{{ user.id }}">
+                  Block User
+                </button>
+              {% else %}
+                <button type="button"
+                        class="btn btn-secondary unblock-user-btn"
+                        data-user-id="{{ user.id }}">
+                  Unblock User
+                </button>
+              {% endif %}
+
+            </div>
+          </td>
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========================= -->
+<!--    EDIT USER MODAL       -->
+<!-- ========================= -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+    <div class="modal-content" style="border-radius:12px;">
+
+      <div class="modal-header" style="background:#007bff; color:white;">
+        <h5 class="modal-title">Edit User</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form id="editUserForm" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+
+          <input type="hidden" id="editUserId" name="user_id">
+
+          <label>Username</label>
+          <input id="editUsername" name="username" class="form-control" required>
+
+          <label style="margin-top:12px;">Email</label>
+          <input id="editEmail" name="email" type="email" class="form-control" required>
+
+        </div>
+
+        <div class="modal-footer" style="flex-direction:column; gap:10px;">
+          <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+          <button type="button" id="deleteUserBtn" class="btn btn-danger w-100">Delete User</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= -->
+<!--       JAVASCRIPT         -->
+<!-- ========================= -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  const editButtons  = document.querySelectorAll('.open-edit-modal');
+  const blockButtons = document.querySelectorAll('.block-user-btn');
+  const unBlockButtons = document.querySelectorAll('.unblock-user-btn');
+
+  const modalEl = document.getElementById('editUserModal');
+  const editForm = document.getElementById('editUserForm');
+  const inputId = document.getElementById('editUserId');
+  const inputName = document.getElementById('editUsername');
+  const inputEmail = document.getElementById('editEmail');
+  const deleteBtn = document.getElementById('deleteUserBtn');
+
+  const modal = new bootstrap.Modal(modalEl);
+
+  /* ---------------------------
+     OPEN EDIT MODAL
+  ---------------------------- */
+  editButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      let uid = btn.dataset.userId;
+      inputId.value = uid;
+      inputName.value = btn.dataset.username;
+      inputEmail.value = btn.dataset.email;
+
+      editForm.action = `/admin-users/edit/${uid}/`;
+      deleteBtn.dataset.deleteUrl = `/admin-users/delete/${uid}/`;
+
+      modal.show();
+    });
+  });
+
+  /* ---------------------------
+     DELETE USER
+  ---------------------------- */
+  deleteBtn.addEventListener('click', () => {
+    const url = deleteBtn.dataset.deleteUrl;
+    if (confirm("Are you sure you want to DELETE this user?")) {
+      window.location.href = url;
+    }
+  });
+
+  /* ---------------------------
+     BLOCK USER
+  ---------------------------- */
+  blockButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      let uid = btn.dataset.userId;
+      if (confirm("Block this user?")) {
+        window.location.href = `/admin-users/block/${uid}/`;
+      }
+    });
+  });
+
+  /* ---------------------------
+     UNBLOCK USER
+  ---------------------------- */
+  unBlockButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      let uid = btn.dataset.userId;
+      if (confirm("Unblock this user?")) {
+        window.location.href = `/admin-users/unblock/${uid}/`;
+      }
+    });
+  });
+
+});
+</script>
+
+{% endblock %}

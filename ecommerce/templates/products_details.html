@@ -1,23 +1,197 @@
 {% extends 'base.html' %}
-{%block content %}
-  
+{% block content %}
 
-    <div class="container">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-        {% else %}
-        <img src="#" alt="No Image">
-        {% endif %}
+<style>
+    /* FULL GRADIENT BACKGROUND */
+    .product-bg {
+        background: linear-gradient(135deg, #0f4c75, #1b262c);
+        min-height: 100vh;
+        padding: 120px 20px 60px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
 
+    /* PREMIUM PRODUCT CARD */
+    .product-card {
+        width: 90%;
+        max-width: 1100px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 18px;
+        box-shadow: 0px 10px 35px rgba(0,0,0,0.25);
+        display: flex;
+        gap: 40px;
+        animation: fadeIn 0.6s ease-in-out;
+        margin-top: 20px;
+    }
+
+    /* ANIMATION */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PRODUCT IMAGE */
+    .product-img-box {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .product-img {
+        width: 380px;
+        border-radius: 20px;
+        object-fit: cover;
+        transition: transform 0.35s ease;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .product-img:hover {
+        transform: scale(1.05);
+    }
+
+    /* PRODUCT INFO */
+    .info {
+        flex: 1.2;
+    }
+
+    .info h1 {
+        font-size: 36px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: #1b262c;
+    }
+
+    .info h3 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #0f4c75;
+    }
+
+    /* STOCK BADGE */
+    .stock-badge {
+        font-weight: 600;
+        font-size: 17px;
+        padding: 6px 14px;
+        border-radius: 12px;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .stock-ok {
+        background: #d4f8d4;
+        color: #007f00;
+    }
+
+    .stock-low {
+        background: #fff3cd;
+        color: #b36b00;
+    }
+
+    .stock-out {
+        background: #ffcccc;
+        color: #b80000;
+    }
+
+    /* DESCRIPTION */
+    .description-box {
+        margin-top: 15px;
+        padding: 15px 20px;
+        border-left: 4px solid #0f4c75;
+        background: #f7f7f7;
+        border-radius: 8px;
+    }
+
+    .description-box p {
+        color: #003cff;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    /* CTA BUTTON */
+    .btn-cart {
+        background: #e63946;
+        border: none;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 10px;
+        width: 230px;
+        margin-top: 20px;
+        transition: 0.3s;
+    }
+
+    .btn-cart:hover {
+        background: #c62828;
+        transform: translateY(-2px);
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 90px;
+        left: 20px;
+    }
+</style>
+
+<!-- BACK BUTTON -->
+<a onclick="history.back()" 
+   class="btn btn-primary back-btn">
+   ⬅ Back
+</a>
+
+<!-- MAIN PRODUCT SECTION -->
+<div class="product-bg">
+    <div class="product-card">
+
+        <!-- PRODUCT IMAGE -->
+        <div class="product-img-box">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" class="product-img">
+            {% else %}
+                <img src="https://via.placeholder.com/300" class="product-img">
+            {% endif %}
+        </div>
+
+        <!-- PRODUCT INFO -->
         <div class="info">
+
             <h1>{{ product.name }}</h1>
             <h3>₹{{ product.price }}</h3>
-            <p>{{ product.description }}</p>
 
-            <button><a href="{% url 'cart_add' product.id %}">Add to Cart</a>
-</button>
+            <!-- STOCK DISPLAY -->
+            {% if product.stock > 0 %}
+                {% if product.stock < 20 %}
+                    <span class="stock-badge stock-low">Low Stock: {{ product.stock }}</span>
+                {% else %}
+                    <span class="stock-badge stock-ok">In Stock: {{ product.stock }}</span>
+                {% endif %}
+            {% else %}
+                <span class="stock-badge stock-out">Out of Stock</span>
+            {% endif %}
+
+            <!-- DESCRIPTION BOX -->
+            <div class="description-box">
+                <h5 style="font-weight:700; margin-bottom:6px;">Description:</h5>
+                <p>{{ product.description }}</p>
+            </div>
+
+            <!-- ADD TO CART -->
+            {% if product.stock > 0 %}
+                <a href="{% url 'cart_add' product.id %}" 
+                   class="btn btn-danger btn-cart">
+                    Add to cart
+                </a>
+            {% else %}
+                <button class="btn btn-secondary btn-cart" disabled>
+                    Out of Stock
+                </button>
+            {% endif %}
         </div>
+
     </div>
+</div>
 
-
-{%endblock%}
+{% endblock %}

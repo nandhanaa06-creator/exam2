@@ -1,21 +1,132 @@
 {% extends 'base.html' %}
+{%load static%}
 {% block content %}
 
+<style>
+/* Full blue gradient background */
+body { margin: 0; }
 
-<div class="container">
-    <h2>Login</h2>
+.page-bg {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #022669, #a8d0ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
 
-    <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
+.login-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 
-        <button type="submit">Login</button>
-    </form>
+.login-card {
+    width: 380px;
+    background: white;
+    padding: 35px 28px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    text-align: center;
+    margin: 87px;
+}
 
-    <p style="text-align:center; margin-top: 10px;">
-        Don't have an account? <a href="/signup/">Signup</a>
-    </p>
+.login-logo {
+    width: 163px;
+    height: 167px;
+    object-fit: contain;
+    background: white;
+    padding: 3px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+.input-with-icon {
+    position: relative;
+    margin-top: 18px;
+}
+
+.input-with-icon i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #777;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 13px 12px 13px 40px;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    background: #f5f6ff;
+}
+
+/* Login button */
+.login-btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 20px;
+    background: #ff9d00;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+}
+
+/* Forgot password */
+.forgot-link {
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #005fcc;
+}
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.bottom-text {
+    margin-top: 18px;
+}
+
+</style>
+
+<br>
+<div class="page-bg">
+    <div class="login-wrapper">
+        <div class="login-card">
+
+            <img src="{% static 'images/logo.webp' %}" class="login-logo" alt="ShopEase Logo">
+
+            <h2 class="login-title">USER LOGIN</h2>
+            <p style="color:#777; font-size:13px; margin-top:-5px;">Welcome back</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-with-icon">
+                    <i class="fa fa-user"></i>
+                    <input type="text" name="username" placeholder="Email or Username" required>
+                </div>
+
+                <div class="input-with-icon">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <!-- 🔹 FORGOT PASSWORD LINK (NEW) -->
+                <a href="/forgot-password/" class="forgot-link">Forgot Password?</a>
+
+                <button type="submit" class="login-btn">LOGIN</button>
+            </form>
+
+            <p class="bottom-text">
+                Don't have an account? <a href="/signup/">Signup</a>
+            </p>
+
+        </div>
+    </div>
 </div>
 
-{%endblock%}
+{% endblock %}

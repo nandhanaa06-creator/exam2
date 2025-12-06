@@ -1,0 +1,72 @@
+{% extends "admin_base.html" %}
+{% block admin_content %}
+
+<style>
+    .edit-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .edit-card {
+        width: 600px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .edit-card h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .product-image {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 10px;
+        display: block;
+        margin: 0 auto 20px auto;
+    }
+
+    .save-btn {
+        width: 100%;
+        padding: 12px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 17px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .save-btn:hover {
+        background: #218838;
+    }
+</style>
+
+<div class="edit-wrapper">
+    <div class="edit-card">
+
+        <h2>Edit Product — {{ product.name }}</h2>
+
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="product-image">
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button class="save-btn">Save Changes</button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

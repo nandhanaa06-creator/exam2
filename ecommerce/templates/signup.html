@@ -1,20 +1,132 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container">
-    <h2>Create Account</h2>
+<style>
+/* Background wrapper (same as login page) */
+.page-bg {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #022669, #a8d0ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
 
-    <form method="POST">
-        {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password1" placeholder="Password" required>
-        <input type="password" name="password2" placeholder="Confirm Password" required>
-        
-        <button type="submit">Sign Up</button>
-    </form>
+/* Center wrapper */
+.signup-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 
-    <p>Already have an account? <a href="/login/">Login</a></p>
+/* Card */
+.signup-card {
+    width: 380px;
+    background: #ffffff;
+    padding: 35px 28px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    text-align: center;
+    margin: 87px;
+}
+
+/* Input with icons */
+.input-with-icon {
+    position: relative;
+    margin-top: 16px;
+}
+
+.input-with-icon i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 15px;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 13px 12px 13px 40px;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    background: #f5f6ff;
+    font-size: 15px;
+}
+
+/* Signup Button */
+.signup-btn {
+    width: 100%;
+    padding: 13px;
+    background: #ff9d00;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.signup-btn:hover {
+    background: #e88c00;
+}
+
+/* Bottom text */
+.bottom-text {
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+.bottom-text a {
+    color: #0056ff;
+}
+</style>
+
+
+<div class="page-bg">   <!-- ⭐ Now matches login page layout -->
+    <div class="signup-wrapper">
+        <div class="signup-card">
+
+            <h2 class="login-title">CREATE ACCOUNT</h2>
+            <p style="color:#777; font-size:13px; margin-top:-5px;">Join ShopEase today</p>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="input-with-icon">
+                    <i class="fa fa-user"></i>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+
+                <!-- Email -->
+                <div class="input-with-icon">
+                    <i class="fa fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+
+                <!-- Password -->
+                <div class="input-with-icon">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" name="password1" placeholder="Password" required>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-with-icon">
+                    <i class="fa fa-lock"></i>
+                    <input type="password" name="password2" placeholder="Confirm Password" required>
+                </div>
+
+                <button type="submit" class="signup-btn">SIGN UP</button>
+            </form>
+
+            <p class="bottom-text">
+                Already have an account? <a href="/login/">Login</a>
+            </p>
+
+        </div>
+    </div>
 </div>
 
-{%endblock%}
+{% endblock %}

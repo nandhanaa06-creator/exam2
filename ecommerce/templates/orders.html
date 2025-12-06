@@ -1,0 +1,141 @@
+{% extends 'admin_base.html' %}
+{% block admin_content %}
+
+<h2 style="
+    text-align:center;
+    margin:30px 0 20px;
+    font-size:30px;
+    font-weight:700;
+">
+    All Orders
+</h2>
+
+<div style="
+    width: 95%;
+    max-width: 1350px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    overflow-x: auto;
+">
+
+
+<table style="
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    font-size: 17px;
+    text-align: center;
+    
+">
+    <thead>
+        <tr style="
+            background:#2c2c2c;
+            color:white;
+            height: 60px;
+            font-weight:600;
+        ">
+            <th style="padding: 15px;">Order ID</th>
+            <th style="padding: 15px;">User</th>
+            <th style="padding: 15px;">Total Amount</th>
+            <th style="padding: 15px;">Date</th>
+            <th style="padding: 15px;">Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for order in orders %}
+        <tr style="
+            transition: background 0.25s ease;
+            border-bottom: 1px solid #e6e6e6;
+        "
+        onmouseover="this.style.background='#f5f5f5'"
+        onmouseout="this.style.background='white'">
+
+            <td style="padding:14px;">{{ order.id }}</td>
+            <td style="padding:14px;">{{ order.user.username }}</td>
+            <td style="padding:14px; font-weight:600;">₹{{ order.total_amount }}</td>
+            <td style="padding:14px;">{{ order.created_at|date:'Y-m-d' }}</td>
+
+            <td style="padding:14px;">
+               <button 
+    class="btn btn-warning"
+    style="
+        padding:7px 14px;
+        background:#ff9500;
+        color:white;
+        border-radius:6px;
+        border:none;
+        font-size:14px;
+        font-weight:600;
+    "
+    data-bs-toggle="modal"
+    data-bs-target="#updateOrderModal{{ order.id }}">
+    Update
+</button>
+
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" style="
+                padding:30px;
+                color:gray;
+                text-align:center;
+                font-size:18px;
+                font-style:italic;
+            ">
+                No orders found.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% for order in orders %}
+<div class="modal fade" id="updateOrderModal{{ order.id }}" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+    <div class="modal-content" style="border-radius: 12px;">
+
+      <!-- Header -->
+      <div style="
+          background:#ff9500;
+          color:white;
+          padding:12px 20px;
+          border-radius:12px 12px 0 0;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;">
+        <h5 style="margin:0;">Update Order #{{ order.id }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body" style="padding:20px;">
+        <form method="POST" action="{% url 'update_order_status' order.id %}">
+          {% csrf_token %}
+
+          <label style="font-weight:600;">Select Status:</label>
+          <select name="status" class="form-control" style="margin-bottom:15px;">
+              <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+              <option value="Processing" {% if order.status == "Processing" %}selected{% endif %}>Processing</option>
+              <option value="Shipped" {% if order.status == "Shipped" %}selected{% endif %}>Shipped</option>
+              <option value="Delivered" {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+              <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+          </select>
+
+          <button type="submit" class="btn btn-warning" style="width:100%; padding:10px;">
+            Update Status
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+</div>
+
+{% endblock %}

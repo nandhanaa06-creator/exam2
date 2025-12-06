@@ -1,0 +1,83 @@
+{% extends "admin_base.html" %}
+{% block admin_content %}
+
+<style>
+    .update-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .update-card {
+        width: 500px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .update-card h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .update-details p {
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+    .update-label {
+        font-weight: 600;
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 6px;
+    }
+
+    .save-btn {
+        width: 100%;
+        padding: 12px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 17px;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+
+    .save-btn:hover {
+        background: #0a59c2;
+    }
+</style>
+
+<div class="update-wrapper">
+    <div class="update-card">
+
+        <h2>Update Order Status</h2>
+
+        <div class="update-details">
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>User:</strong> {{ order.user.username }}</p>
+            <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label class="update-label">Order Status</label>
+            <select name="status" class="form-select">
+                <option value="pending" {% if order.status == "pending" %}selected{% endif %}>Pending</option>
+                <option value="shipped" {% if order.status == "shipped" %}selected{% endif %}>Shipped</option>
+                <option value="delivered" {% if order.status == "delivered" %}selected{% endif %}>Delivered</option>
+            </select>
+
+            <button class="save-btn">Save Changes</button>
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
